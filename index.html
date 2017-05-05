@@ -5,26 +5,41 @@
     <script src="data_generator.js"></script>
   </head>
   <body>
-    <button class="allTweets">Show All Tweets</button>
-    <button class="nextTweet">Show Next Tweet</button>
-    <ul> </ul>
+    <button class="streamToggle-btn">Toggle Tweet Stream: ON</button>
+    <button class="nextTweet-btn">Show Next Tweet</button>
+    <section class='tweetList'> </section>
     <script>
 
       $(document).ready(function(){
-        var $list = $('ul');
+        var $list = $('.tweetList');
         /*$body.html('');*/
-
-        var index = 0;
-        $('.nextTweet').on('click', function() {
+        var showNextTweet = function() {
           var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
+          var $tweet = $('<ul class="tweet"></ul>');
           $tweet.text(tweet.created_at + ' @' + tweet.user + ': ' + tweet.message);
 
           if ($tweet.text() !== $('div').first().text()) {
             $tweet.prependTo($list);
             index++;
           }
-        });
+        }
+
+        var index = 0;
+        //NEXT TWEET BUTTON
+        $('.nextTweet-btn').on('click', showNextTweet);
+
+        //TOGGLE STREAM BUTTON
+        var toggleStream = window.setInterval(showNextTweet, 1000);
+        $('.streamToggle-btn').on('click', function() {
+          if(toggleStream) {
+            window.clearInterval(toggleStream);
+            toggleStream = null;
+            $(this).text('Toggle Tweet Stream: OFF');
+          } else {
+            toggleStream = window.setInterval(showNextTweet, 1000);
+            $(this).text('Toggle Tweet Stream: ON');
+          }
+        }); 
 
       });
     </script>
