@@ -9,28 +9,51 @@
     <button class="nextTweet-btn">Show Next Tweet</button>
     <section class='tweetList'> </section>
     <script>
-
+     /* var filterUserTweets = function() {
+          //TODO: for all tweets that do not belong to the clicked user, .hide();
+          console.log($(this));
+        }*/
       $(document).ready(function(){
         var $list = $('.tweetList');
         /*$body.html('');*/
+
+
         var showNextTweet = function() {
           var tweet = streams.home[index];
           var $tweet = $('<ul class="tweet"></ul>');
-          $tweet.text(tweet.created_at + ' @' + tweet.user + ': ' + tweet.message);
 
-          if ($tweet.text() !== $('div').first().text()) {
+          var username = '@' + tweet.user;
+          var $username = $('<p></p>');
+          //var link = tweet.user + '.html';
+          //TODO: get onclick with filterUserTweets working
+          //onClick="filterUserTweets();"
+          $username.append($('<a class="userLink" data-user=' + tweet.user + ' href="javascript:void(0);">' + username + '</a>'));
+          $username.append($('<span id="timeCreated"> ' + tweet.created_at + '</span>'));
+          var $message = $('<ul class="tweetBody">' + tweet.message + '</ul>');
+
+          $tweet.append($username);
+          $tweet.append($message);
+
+          if ($tweet.text() !== $('.tweetList').first().text()) {
             $tweet.prependTo($list);
             index++;
           }
         }
 
+        $('#userLink').on('click', function(user) {
+            console.log(user);
+        });
+        $('#timeCreated').on('click', function() {
+          alert('');
+        });
+
         var index = 0;
         //NEXT TWEET BUTTON
-        $('.nextTweet-btn').on('click', showNextTweet);
+        $('.nextTweet-btn').click(showNextTweet);
 
         //TOGGLE STREAM BUTTON
         var toggleStream = window.setInterval(showNextTweet, 1000);
-        $('.streamToggle-btn').on('click', function() {
+        $('.streamToggle-btn').click(function() {
           if(toggleStream) {
             window.clearInterval(toggleStream);
             toggleStream = null;
@@ -39,7 +62,8 @@
             toggleStream = window.setInterval(showNextTweet, 1000);
             $(this).text('Toggle Tweet Stream: ON');
           }
-        }); 
+        });
+        
 
       });
     </script>
