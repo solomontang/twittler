@@ -1,7 +1,12 @@
 $(document).ready(function(){
   var $list = $('.tweetList');
-  /*$body.html('');*/
 
+  var refreshDates = function() {
+    setTimeout(refreshDates, 30000);
+  };
+  refreshDates();
+
+  /*$body.html('');*/
 
   var showNextTweet = function(stream, $obj) {
     var index = 0;
@@ -12,11 +17,8 @@ $(document).ready(function(){
 
         var username = '@' + tweet.user;
         var $username = $('<div></div>');
-        //var link = tweet.user + '.html';
-        //TODO: get onclick with filterUserTweets working
-        //onClick="filterUserTweets();"
-        $username.append($('<a class="userLink" data-user=' + tweet.user + ' href="#">' + username + '</a>'));
-        $username.append($('<span id="timeCreated"> ' + tweet.created_at + '</span>'));
+        $username.append($('<a class="userLink" data-user=' + tweet.user + ' href="#myfeed">' + username + ' </a>'));
+        $username.append($('<time data-livestamp="' + tweet.created_at.toISOString() + '"></time>'));
         var $message = $('<ul class="tweetBody">' + tweet.message + '</ul>');
 
         $tweet.append($username);
@@ -31,6 +33,7 @@ $(document).ready(function(){
 
 
   $('.tweetList').on('click', 'a', function() {
+    //TODO: Update .userStream with setInterval such that it matches the feed stream
     //clear '.userStream'
     $('.userStream').html('');
     var thisUser = $(this).data('user');
@@ -51,14 +54,14 @@ $(document).ready(function(){
   $('.nextTweet-btn').click( showNextTweetFeed );
 
   //TOGGLE STREAM BUTTON: ON BY DEFAULT
-  var toggleStream = window.setInterval( showNextTweetFeed, 1000);
+  var toggleStream = window.setInterval( showNextTweetFeed, 500);
   $('.streamToggle-btn').click(function() {
     if(toggleStream) {
       window.clearInterval(toggleStream);
       toggleStream = null;
       $(this).text('Get Live Updates: OFF');
     } else {
-      toggleStream = window.setInterval( showNextTweetFeed, 1000);
+      toggleStream = window.setInterval( showNextTweetFeed, 500);
       $(this).text('Get Live Updates: ON');
     }
   });
