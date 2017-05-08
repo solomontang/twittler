@@ -14,23 +14,19 @@ $(document).ready(function(){
       var tweet = stream[index];
       if (tweet) {
         var $tweet = $('<ul class="tweet well"></ul>')
-
-        var username = '@' + tweet.user;
-        var $username = $('<div></div>');
-        $username.append($('<a class="userLink" data-user=' + tweet.user + ' href="#myfeed">' + username + ' </a>'));
-        $username.append($('<time data-livestamp="' + tweet.created_at.toISOString() + '"></time>'));
-        var $message = $('<ul class="tweetBody">' + tweet.message + '</ul>');
-
-        $tweet.append($username);
-        $tweet.append($message);
         $tweet.fadeIn('slow');
         $tweet.prependTo($obj);
+
+        var username = '@' + tweet.user;
+        var $username = $tweet.append($('<div></div>'));
+        $username.append($('<strong><a class="userLink" data-user=' + tweet.user + ' href="#myfeed">' + username + ' </a></strong>'));
+        $username.append($('<time data-livestamp="' + tweet.created_at.toISOString() + '"></time>'));
+        var $message = $tweet.append($('<ul class="tweetBody">' + tweet.message + '</ul>'));
+
         index++;
       }
     }
   }
-
-
 
   $('.tweetList').on('click', 'a', function() {
     //TODO: Update .userStream with setInterval such that it matches the feed stream
@@ -59,11 +55,16 @@ $(document).ready(function(){
     if(toggleStream) {
       window.clearInterval(toggleStream);
       toggleStream = null;
-      $(this).text('Get Live Updates: OFF');
+      $(this).html("Auto Feed <i class='glyphicon glyphicon-play'></i>");
     } else {
       toggleStream = window.setInterval( showNextTweetFeed, 500);
-      $(this).text('Get Live Updates: ON');
+      $(this).html("Auto Feed <i class='glyphicon glyphicon-pause'></i>");
     }
+  });
+
+  //ALL TWEET BUTTON
+  $('.allTweets-btn').click(function() {
+    $.each(streams.home, () => showNextTweetFeed());
   });
 
 });
